@@ -32,16 +32,20 @@ db.UserEvent = UserEvent(sequelize, Sequelize);
 db.Event.belongsToMany(db.Tag, {
   through: db.EventTag,
   foreignKey: "eventId",
+  as: "tags",
 });
 db.Tag.belongsToMany(db.Event, {
   through: db.EventTag,
   foreignKey: "tagId",
+  as: "events",
 });
 db.Event.hasMany(db.EventImage, {
   foreignKey: "eventId",
+  as: "event_images",
 });
 db.EventImage.belongsTo(db.Event, {
   foreignKey: "eventId",
+  as: "event",
 });
 db.User.belongsToMany(db.Event, {
   through: db.UserEvent,
@@ -52,4 +56,4 @@ db.Event.belongsToMany(db.User, {
   foreignKey: "eventId",
 });
 
-
+export default db;
