@@ -1,31 +1,30 @@
+import { use } from "react";
 import { DataTypes } from "sequelize";
 
-const EventImages = (sequelize) => {
-  sequelize.define(
-    "EventImages",
+const userEvents = (sequelize) => {
+  return sequelize.define(
+    "UserEvents",
     {
-      id: {
+      userId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        references: {
+          model: "User",
+          key: "id",
+        },
       },
       eventId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        primaryKey: true,
         references: {
           model: "Event",
           key: "id",
         },
       },
-      imageLocation: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
     },
     {
-      tableName: "event_images",
+      tableName: "user_events",
       timestamps: false,
     }
-  )
-}
-export default EventImages;
+  );
+};
