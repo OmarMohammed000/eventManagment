@@ -22,6 +22,10 @@ const User = (sequelize) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      refreshToken: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      }
     },
     {
       tableName: "users",
@@ -29,4 +33,5 @@ const User = (sequelize) => {
     }
   );
 };
+
 export default User;
