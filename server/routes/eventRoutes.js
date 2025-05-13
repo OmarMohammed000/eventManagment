@@ -1,0 +1,20 @@
+import express from "express";
+import isAuth from "../controllers/users/isAuth.js";
+import getEvents from "../controllers/events/getEvents.js";
+import getEventById from "../controllers/events/getEventById.js";
+import getEventByTag from "../controllers/events/getEventByTag.js";
+import getEventByUser from "../controllers/events/getEventByUser.js";
+import createEvent from "../controllers/events/createEvent.js";
+import deleteEvent from "../controllers/events/deleteEvent.js";
+import editEvent from "../controllers/events/editEvent.js";
+import isAdmin from "../controllers/users/isAdmin.js";
+
+const app = express.Router();
+app.get("/api/events", getEvents);
+app.get("/api/events/:id", getEventById);
+app.get("/api/events/tag/:tagId", getEventByTag);
+app.get("/api/events/user/:userId", isAuth, getEventByUser);
+app.post("/api/events", isAdmin, createEvent);
+app.put("/api/events/:id", isAdmin, editEvent);
+app.delete("/api/events/:id", isAdmin, deleteEvent);
+export default app;

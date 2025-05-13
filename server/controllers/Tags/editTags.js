@@ -27,3 +27,4 @@ async function editTag(req, res) {
     res.status(500).json({ message: "An error occurred while updating the Tag" });
   }
 }
+export default editTag;

@@ -16,3 +16,4 @@ async function getEventById(req, res) {
     res.status(500).json({ message: "An error occurred while fetching the Event" });
   }
 }
+export default getEventById;
