@@ -1,8 +1,8 @@
 import express from "express";
-import isAdmin from "../controllers/users/isAdmin";
-import createEventImage from "../controllers/events/createEventImage.js";
-import deleteEventImages from "../controllers/events/deleteEventImages.js";
-import getEventImage from "../controllers/events/getEventImage.js";
+import isAdmin from "../controllers/users/isAdmin.js";
+import createEventImage from "../controllers/Events/createEventImage.js";
+import deleteEventImages from "../controllers/Events/deleteEventImages.js";
+import getEventImage from "../controllers/Events/getEventImage.js";
 
 const app = express.Router();
 // Event Images routes

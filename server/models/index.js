@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
-import DBConfig from "../utils/DBConfig";
-import User from "./UserModel";
-import Tag from "./TagModel";
-import Event from "./EventModel";
-import EventTag from "./EventTagModel";
-import EventImage from "./EventImageModel";
-import UserEvent from "./UserEventsModel";
+import DBConfig from "../utils/DBConfig.js";
+import User from "./UserModel.js";
+import Tag from "./TagModel.js";
+import Event from "./EventModel.js";
+import EventTag from "./EventTagModel.js";
+import EventImage from "./EventImagesModel.js";
+import UserEvent from "./UserEventsModel.js";
 
 const sequelize = new Sequelize(
   DBConfig.development.database,
@@ -30,30 +30,41 @@ db.EventImage = EventImage(sequelize, Sequelize);
 db.UserEvent = UserEvent(sequelize, Sequelize);
 // Associations
 db.Event.belongsToMany(db.Tag, {
-  through: db.EventTag,
-  foreignKey: "eventId",
-  as: "tags",
+  through: 'event_tags', // Match your PostgreSQL table name
+  foreignKey: 'event_id', // Match your column name
+  otherKey: 'tag_id', // Match your column name
+  as: 'tags'
 });
+
 db.Tag.belongsToMany(db.Event, {
-  through: db.EventTag,
-  foreignKey: "tagId",
-  as: "events",
+  through: 'event_tags',
+  foreignKey: 'tag_id',
+  otherKey: 'event_id',
+  as: 'events'
 });
+
 db.Event.hasMany(db.EventImage, {
-  foreignKey: "eventId",
-  as: "event_images",
+  foreignKey: 'event_id',
+  as: 'event_images',
+  onDelete: 'CASCADE'
 });
+
 db.EventImage.belongsTo(db.Event, {
-  foreignKey: "eventId",
-  as: "event",
+  foreignKey: 'event_id',
+  targetKey: 'id',
+  as: 'event'
 });
 db.User.belongsToMany(db.Event, {
-  through: db.UserEvent,
-  foreignKey: "userId",
+  through: 'user_events', // Match your PostgreSQL table name
+  foreignKey: 'user_id', // Match your column name
+  otherKey: 'event_id'
 });
+
 db.Event.belongsToMany(db.User, {
-  through: db.UserEvent,
-  foreignKey: "eventId",
+  through: 'user_events',
+  foreignKey: 'event_id',
+  otherKey: 'user_id'
 });
+
 
 export default db;

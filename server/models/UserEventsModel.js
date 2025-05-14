@@ -1,11 +1,10 @@
-import { use } from "react";
 import { DataTypes } from "sequelize";
 
 const userEvents = (sequelize) => {
   return sequelize.define(
     "UserEvents",
     {
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
@@ -13,7 +12,7 @@ const userEvents = (sequelize) => {
           key: "id",
         },
       },
-      eventId: {
+      event_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
@@ -28,3 +27,4 @@ const userEvents = (sequelize) => {
     }
   );
 };
+export default userEvents;

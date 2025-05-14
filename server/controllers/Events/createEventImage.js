@@ -1,5 +1,5 @@
-import db from "../../models";
-import cloudinary from "../../utils/cloudinary-config";
+import db from "../../models/index.js";
+import cloudinary from "../../utils/cloudinary-config.js";
 
 export async function createEventImage(req, res) {
   const jsonData = JSON.parse(req.body.data);

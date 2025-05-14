@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function deleteTag(req, res) {
   const id = parseInt(req.params.id);
@@ -6,7 +6,7 @@ async function deleteTag(req, res) {
     return res.status(400).json({ message: "Invalid Tag ID" });
   }
   try {
-    const result = await db.Tag.destroy({ where: { tag_id: id } });
+    const result = await db.Tag.destroy({ where: { id: id } });
     if (result === 0) {
       return res.status(404).json({ message: "Tag not found" });
     }

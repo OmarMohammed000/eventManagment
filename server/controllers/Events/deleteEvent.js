@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function deleteEvent(req, res) {
   const id = parseInt(req.params.id);

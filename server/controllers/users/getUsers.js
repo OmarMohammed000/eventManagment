@@ -1,9 +1,9 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function getUsers(req, res) {
   try {
     const users = await db.User.findAll({
-      attributes: ["id", "username", "email","isAdmin", "createdAt", "updatedAt"],
+      attributes: ["id", "email","isAdmin", "createdAt", "updatedAt"],
     });
 
     if (users.length === 0) {

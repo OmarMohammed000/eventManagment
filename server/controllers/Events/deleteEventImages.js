@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function deleteEventImages(req, res) {
   const eventId = parseInt(req.params.id);

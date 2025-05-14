@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 
 const EventTag = (sequelize) => {
-  sequelize.define(
+  return sequelize.define(
     "EventTag",{
-      tagId: {
+      tag_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
@@ -11,7 +11,7 @@ const EventTag = (sequelize) => {
           key: "id",
         },
       },
-      eventId:{
+      event_id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
         references:{

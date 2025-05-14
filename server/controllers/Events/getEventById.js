@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function getEventById(req, res) {
   const id = parseInt(req.params.id);

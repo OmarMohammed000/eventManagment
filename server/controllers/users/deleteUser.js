@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function deleteUser(req, res) {
   const id = parseInt(req.params.id);

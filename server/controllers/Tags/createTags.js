@@ -1,16 +1,16 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function createTag(req, res) {
-    const { tag_name } = req.body;
+    const { name } = req.body;
 
     try {
-        if (!tag_name) {
+        if (!name) {
             return res.status(400).json({ message: "Tag name is required" });
         }
 
         // Create a new tag
         const newTag = await db.Tag.create({
-            tag_name: tag_name,
+            name: name,
         });
 
         res.status(201).json({ message: "Tag created successfully", newTag });

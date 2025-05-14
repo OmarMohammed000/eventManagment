@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import db from "../models/index.js";
+import db from "../../models/index.js";
 
 
-const saltRounds = environment.config.SALT_ROUNDS || 4;
+const saltRounds = parseInt(process.env.SALT_ROUNDS) || 4;
 
 async function register(req, res) {
   const { email, password } = req.body;
@@ -10,6 +10,11 @@ async function register(req, res) {
     return res
       .status(400)
       .json({ message: "Username,Password and E-mail are required" });
+  }
+  if (password.length < 6) {
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters long" });
   }
   try {
     const existingUser = await db.User.findOne({ where: { email } });

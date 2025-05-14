@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 
 const EventImages = (sequelize) => {
-  sequelize.define(
+  return sequelize.define(
     "EventImages",
     {
       id: {
@@ -9,23 +9,26 @@ const EventImages = (sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      eventId: {
+      image_location: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true
+      },
+      event_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Event",
-          key: "id",
+          model: "events",
+          key: "id"
         },
-      },
-      imageLocation: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
+        onDelete: 'CASCADE'
+      }
     },
     {
-      tableName: "event_images",
-      timestamps: false,
+      tableName: "events_images",
+      underscored: true,
+      timestamps: false
     }
-  )
-}
+  );
+};
 export default EventImages;

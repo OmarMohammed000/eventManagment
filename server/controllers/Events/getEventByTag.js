@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function getEventByTag(req, res) {
   const tagId = parseInt(req.params.tagId);

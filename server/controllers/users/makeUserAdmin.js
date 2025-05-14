@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function makeUserAdmin(req, res) {
   const id = parseInt(req.params.id);
@@ -14,7 +14,7 @@ async function makeUserAdmin(req, res) {
     user.isAdmin = true;
     await user.save();
 
-    res.status(200).json({ message: "User updated successfully", user });
+    res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     console.error("Error updating User:", error);
     res.status(500).json({ message: "An error occurred while updating the User" });

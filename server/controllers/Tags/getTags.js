@@ -1,9 +1,9 @@
-import db from "../../models";
+import db from "../../models/index.js";
 
 async function getTags(req, res) {
   try {
     const tags = await db.Tag.findAll({
-      attributes: ["tag_id", "tag_name"],
+      attributes: ["id", "name"],
     });
 
     if (tags.length === 0) {

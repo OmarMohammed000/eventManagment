@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 
-const Event = (Sequelize) => {
-  return Sequelize.define(
+const Event = (sequelize) => {
+  return sequelize.define(
     "Event",
     {
       id: {
@@ -9,7 +9,7 @@ const Event = (Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      eventName: {
+      event_name: {
         type: DataTypes.TEXT,
         allowNull: false,
       },
@@ -21,18 +21,19 @@ const Event = (Sequelize) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      startDate: {
+      start_date: {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      endDate: {
+      end_date: {
         type: DataTypes.DATE,
         allowNull: false,
-      },
+      }
     },
     {
       tableName: "events",
-      timestamps: false,
+      underscored: true,
+      timestamps: false
     }
   );
 };
