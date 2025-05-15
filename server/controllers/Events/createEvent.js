@@ -9,10 +9,10 @@ async function createEvent(req, res) {
   }
   // Create a new event
   const newEvent = await db.Event.create({
-    eventName: event_name,
+     event_name,
     description: event_description,
-    startDate: event_start,
-    endDate: event_end,
+    start_date: event_start,
+    end_date: event_end,
     venu: event_venue,
   })
   res.status(201).json({ message: "Event created successfully", newEvent });

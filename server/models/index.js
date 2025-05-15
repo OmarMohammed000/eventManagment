@@ -27,7 +27,7 @@ db.Tag = Tag(sequelize, Sequelize);
 db.Event = Event(sequelize, Sequelize);
 db.EventTag = EventTag(sequelize, Sequelize);
 db.EventImage = EventImage(sequelize, Sequelize);
-db.UserEvent = UserEvent(sequelize, Sequelize);
+db.UserEvents = UserEvent(sequelize, Sequelize);
 // Associations
 db.Event.belongsToMany(db.Tag, {
   through: 'event_tags', // Match your PostgreSQL table name

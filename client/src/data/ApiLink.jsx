@@ -1,2 +1,2 @@
-const apiLink="https//localhost:4000";
+const apiLink="http://localhost:4000/api";
 export default apiLink;

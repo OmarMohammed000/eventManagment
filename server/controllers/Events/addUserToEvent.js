@@ -1,8 +1,9 @@
 import db from "../../models/index.js";
 
 async function addUserToEvent(req, res) {
-  const { userId, eventId } = req.body;
-
+  const eventId = parseInt(req.params.eventId);
+  const userId = parseInt(req.params.userId);
+  
   try {
     // Check if the user exists
     const user = await db.User.findByPk(userId);
@@ -17,15 +18,19 @@ async function addUserToEvent(req, res) {
     }
 
     // Add the user to the event
-    await db.EventUser.create({
-      user_id: user.id,
-      event_id: event.id,
+    await db.UserEvents.create({
+      user_id: userId,
+      event_id: eventId
     });
 
     res.status(200).json({ message: "User added to event successfully" });
   } catch (error) {
     console.error("Error adding user to event:", error);
-    res.status(500).json({ message: "An error occurred while adding the user to the event" });
+    res.status(500).json({ 
+      message: "An error occurred while adding the user to the event",
+      error: error.message 
+    });
   }
 }
+
 export default addUserToEvent;

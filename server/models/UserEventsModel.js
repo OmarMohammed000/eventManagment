@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 
-const userEvents = (sequelize) => {
+const UserEvents = (sequelize) => {
   return sequelize.define(
     "UserEvents",
     {
@@ -8,7 +8,7 @@ const userEvents = (sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
-          model: "User",
+          model: "users",
           key: "id",
         },
       },
@@ -16,15 +16,17 @@ const userEvents = (sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
-          model: "Event",
+          model: "events",
           key: "id",
         },
+        onDelete: 'CASCADE'
       },
     },
     {
       tableName: "user_events",
+      underscored: true,
       timestamps: false,
     }
   );
 };
-export default userEvents;
+export default UserEvents;

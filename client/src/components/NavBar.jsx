@@ -18,8 +18,11 @@ export default function NavBar() {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
+      
+        <Toolbar disableGutters  sx={{
+            paddingRight: 2,
+            paddingLeft: 2,
+          }} >
           {/* Left section - Brand and conditional Your Events */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography
@@ -71,7 +74,7 @@ export default function NavBar() {
           </Box>
 
           {/* Right section - Auth buttons and Theme Toggle */}
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} alignItems="center" justifyContent="flex-end">
             {isLoggedIn ? (
               <Button color="inherit">Logout</Button>
             ) : (
@@ -89,7 +92,7 @@ export default function NavBar() {
             <ColorModeToggle />
           </Stack>
         </Toolbar>
-      </Container>
+     
     </AppBar>
   );
 }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -21,6 +21,15 @@ export default function CustomThemeProvider({ children }) {
   const theme = React.useMemo(
     () =>
       createTheme({
+        components: {
+          MuiCssBaseline: {
+            styleOverrides: {
+              body: {
+                transition: "all 0.3s linear",
+              },
+            },
+          },
+        },
         palette: {
           mode,
           ...(mode === "light"
@@ -63,6 +72,13 @@ export default function CustomThemeProvider({ children }) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <GlobalStyles
+          styles={{
+            "*": {
+              transition: "background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease",
+            },
+          }}
+        />
         {children}
       </ThemeProvider>
     </ColorModeContext.Provider>

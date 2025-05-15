@@ -10,9 +10,14 @@ async function getEventByTag(req, res) {
       include: [
         {
           model: db.Tag,
+          as: 'tags', // Add this alias to match the model association
           where: { id: tagId },
-          through: { attributes: [] }, 
+          through: { attributes: [] },
         },
+        {
+          model: db.EventImage,
+          as: 'event_images' // Include images as well to match the Events component
+        }
       ],
     });
     if (events.length === 0) {

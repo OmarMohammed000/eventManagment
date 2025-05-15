@@ -30,3 +30,4 @@ async function removeTagFromEvent(req, res) {
     res.status(500).json({ message: "An error occurred while removing the tag from the event" });
   }
 }
+export default removeTagFromEvent;
