@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import EventCard from "../../components/EventCard";
 import TagFilter from "./TagFilter";
 import apiLink from "../../data/ApiLink";
@@ -16,7 +16,36 @@ export default function Events() {
   const [error, setError] = useState(null);
   const [bookedStatuses, setBookedStatuses] = useState({});
 
-  // Fetch tags
+  const fetchEvents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const apiCall = selectedTag 
+        ? `${apiLink}/events/tag/${selectedTag}`
+        : `${apiLink}/events`;
+      const response = await axios.get(apiCall);
+      setEvents(response.data);
+
+      if (user) {
+        const statuses = {};
+        await Promise.all(
+          response.data.map(async (event) => {
+            const isBooked = await checkEventBookingStatus(event.id, user.id);
+            statuses[event.id] = isBooked;
+          })
+        );
+        setBookedStatuses(statuses);
+      }
+    } catch (error) {
+      setError("Error Fetching events: " + error);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedTag, user]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -29,65 +58,12 @@ export default function Events() {
     fetchTags();
   }, []);
 
-  // Fetch events and check booking status
-  useEffect(() => {
-    const fetchEventsAndStatus = async () => {
-      try {
-        setLoading(true);
-        const apiCall = selectedTag 
-          ? `${apiLink}/events/tag/${selectedTag}`
-          : `${apiLink}/events`;
-        const response = await axios.get(apiCall);
-        setEvents(response.data);
-
-        // Check booking status for each event if user is logged in
-        if (user) {
-          const statuses = {};
-          await Promise.all(
-            response.data.map(async (event) => {
-              const isBooked = await checkEventBookingStatus(event.id, user.id);
-              statuses[event.id] = isBooked;
-            })
-          );
-          setBookedStatuses(statuses);
-        }
-      } catch (error) {
-        setError("Error Fetching events: " + error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventsAndStatus();
-  }, [selectedTag, user]);
-
   const handleTagSelect = (tagId) => {
     setSelectedTag(tagId);
   };
 
   if (loading) {
-    return (
-      <Container maxWidth="xl">
-        <Grid 
-          container 
-          spacing={3} 
-          padding={2}
-          direction="column"
-          alignItems="stretch"
-        >
-          {[1, 2, 3].map((item) => (
-            <Grid item xs={12} key={item}>
-              <Box sx={{ width: '100%' }}>
-                <Skeleton variant="rectangular" sx={{ height: 300, width: '100%', mb: 2 }} />
-                <Skeleton variant="text" sx={{ height: 40, width: '60%', mb: 1 }} />
-                <Skeleton variant="text" sx={{ height: 24, width: '40%', mb: 1 }} />
-                <Skeleton variant="text" sx={{ height: 24, width: '30%' }} />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    );
+    return <EventsLoadingSkeleton />;
   }
 
   if (error) {
@@ -115,10 +91,7 @@ export default function Events() {
                 ...event,
                 image: event.event_images?.[0]?.image_location,
               }}
-              sx={{ 
-                width: '100%',
-                maxWidth: '100%'
-              }}
+              sx={{ width: '100%', maxWidth: '100%' }}
               isBooked={bookedStatuses[event.id] || false}
             />
           </Grid>
@@ -127,3 +100,20 @@ export default function Events() {
     </Container>
   );
 }
+
+const EventsLoadingSkeleton = () => (
+  <Container maxWidth="xl">
+    <Grid container spacing={3} padding={2}>
+      {[1, 2, 3].map((item) => (
+        <Grid item xs={12} key={item}>
+          <Box sx={{ width: '100%' }}>
+            <Skeleton variant="rectangular" sx={{ height: 300, mb: 2 }} />
+            <Skeleton variant="text" sx={{ height: 40, width: '60%', mb: 1 }} />
+            <Skeleton variant="text" sx={{ height: 24, width: '40%', mb: 1 }} />
+            <Skeleton variant="text" sx={{ height: 24, width: '30%' }} />
+          </Box>
+        </Grid>
+      ))}
+    </Grid>
+  </Container>
+);

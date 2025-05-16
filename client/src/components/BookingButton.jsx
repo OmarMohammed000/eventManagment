@@ -13,13 +13,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import apiLink from '../data/ApiLink';
 
-export default function BookingButton({ eventId, isBooked = false, onBookingSuccess }) {
+export default function BookingButton({ eventId, isBooked = false }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   const handleBookEvent = async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
       await axios.post(
@@ -27,10 +29,7 @@ export default function BookingButton({ eventId, isBooked = false, onBookingSucc
         {},
         { withCredentials: true }
       );
-      setShowSuccess(true);
-      if (onBookingSuccess) {
-        onBookingSuccess();
-      }
+      setShowDialog(true);
     } catch (error) {
       console.error("Failed to book event:", error);
     } finally {
@@ -38,18 +37,18 @@ export default function BookingButton({ eventId, isBooked = false, onBookingSucc
     }
   };
 
-  const handleDialogClose = () => {
-    setShowSuccess(false);
-    // First navigate to home page
-    navigate('/', { replace: true });
-    // Then scroll to your-events section after navigation is complete
-    setTimeout(() => {
-      const element = document.getElementById('your-events');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+  const handleDialogClose = (viewEvents = false) => {
+    setShowDialog(false);
+    if (viewEvents) {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById('your-events');
+        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   };
+
+  if (!user) return null;
 
   return (
     <>
@@ -60,25 +59,22 @@ export default function BookingButton({ eventId, isBooked = false, onBookingSucc
           variant="outlined" 
         />
       ) : (
-        user && (
-          <Button
-            size="small"
-            color="primary"
-            onClick={handleBookEvent}
-            disabled={loading}
-            variant="contained"
-          >
-            {loading ? "Booking..." : "Book Now"}
-          </Button>
-        )
+        <Button
+          size="small"
+          color="primary"
+          onClick={handleBookEvent}
+          disabled={loading}
+          variant="contained"
+        >
+          {loading ? "Booking..." : "Book Now"}
+        </Button>
       )}
 
       <Dialog
-        open={showSuccess}
-        onClose={handleDialogClose}
-        aria-labelledby="booking-success-dialog"
+        open={showDialog}
+        onClose={() => handleDialogClose(false)}
       >
-        <DialogTitle id="booking-success-dialog">
+        <DialogTitle>
           Booking Successful!
         </DialogTitle>
         <DialogContent>
@@ -87,7 +83,10 @@ export default function BookingButton({ eventId, isBooked = false, onBookingSucc
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
+          <Button onClick={() => handleDialogClose(false)} color="primary">
+            Stay Here
+          </Button>
+          <Button onClick={() => handleDialogClose(true)} color="primary" variant="contained">
             View My Events
           </Button>
         </DialogActions>
