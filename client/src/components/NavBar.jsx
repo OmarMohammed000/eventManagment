@@ -3,13 +3,11 @@ import {
   AppBar,
   Box,
   Button,
-  Container,
-  InputBase,
   Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchBar from "./SearchBar";
 import ColorModeToggle from './ColorModeToggle';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -52,31 +50,7 @@ export default function NavBar() {
               px: 4
             }}
           >
-            <Box
-              sx={{
-                position: 'relative',
-                backgroundColor: 'action.hover',
-                borderRadius: 1,
-                width: '100%',
-                maxWidth: 600,
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <SearchIcon sx={{ ml: 2, color: 'background.default' }} />
-              <InputBase 
-                placeholder="Search Events..."
-                sx={{
-                  ml: 1,
-                  flex: 1,
-                  p: 1,
-                  color: 'text.primary',
-                  fontWeight:"light",
-                  
-                }}
-                inputProps={{ 'aria-label': 'search events' }}
-              />
-            </Box>
+           <SearchBar></SearchBar>
           </Box>
 
           {/* Right section - Auth buttons and Theme Toggle */}
