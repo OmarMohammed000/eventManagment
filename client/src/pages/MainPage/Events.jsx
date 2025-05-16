@@ -4,13 +4,17 @@ import TagFilter from "./TagFilter";
 import apiLink from "../../data/ApiLink";
 import { Alert, Box, Container, Grid, Skeleton } from "@mui/material";
 import axios from "axios";
+import { checkEventBookingStatus } from '../../utils/checkEventBookingStatus';
+import { useAuth } from "../../context/AuthContext";
 
 export default function Events() {
+  const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bookedStatuses, setBookedStatuses] = useState({});
 
   // Fetch tags
   useEffect(() => {
@@ -25,9 +29,9 @@ export default function Events() {
     fetchTags();
   }, []);
 
-  // Fetch events based on selected tag
+  // Fetch events and check booking status
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEventsAndStatus = async () => {
       try {
         setLoading(true);
         const apiCall = selectedTag 
@@ -35,14 +39,27 @@ export default function Events() {
           : `${apiLink}/events`;
         const response = await axios.get(apiCall);
         setEvents(response.data);
+
+        // Check booking status for each event if user is logged in
+        if (user) {
+          const statuses = {};
+          await Promise.all(
+            response.data.map(async (event) => {
+              const isBooked = await checkEventBookingStatus(event.id, user.id);
+              statuses[event.id] = isBooked;
+            })
+          );
+          setBookedStatuses(statuses);
+        }
       } catch (error) {
         setError("Error Fetching events: " + error);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
-  }, [selectedTag]);
+
+    fetchEventsAndStatus();
+  }, [selectedTag, user]);
 
   const handleTagSelect = (tagId) => {
     setSelectedTag(tagId);
@@ -102,6 +119,7 @@ export default function Events() {
                 width: '100%',
                 maxWidth: '100%'
               }}
+              isBooked={bookedStatuses[event.id] || false}
             />
           </Grid>
         ))}

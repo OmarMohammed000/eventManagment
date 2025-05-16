@@ -1,15 +1,28 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import NavBar from './NavBar';
-import { Container } from '@mui/material';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import NavBar from "./NavBar";
+import Footer from "./Footer";
+import { Box } from "@mui/material";
 
 export default function Layout() {
   return (
-    <>
-    <Container sx={{mb:10}}>
+    <Box sx={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      minHeight: "100vh" 
+    }}>
       <NavBar />
-    </Container>
-      <Outlet />
-    </>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          pt: { xs: 8, sm: 9 },
+          pb: 3,
+        }}
+      >
+        <Outlet />
+      </Box>
+      <Footer />
+    </Box>
   );
 }

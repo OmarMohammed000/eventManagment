@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, InputBase, Paper, Typography, List, ListItem, ListItemAvatar, ListItemText, Avatar, ClickAwayListener } from '@mui/material';
+import { Box, InputBase, Paper, Typography, List, ListItem, ListItemAvatar, ListItemText, Avatar, ClickAwayListener, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
 import apiLink from '../data/ApiLink';
@@ -73,7 +73,11 @@ export default function SearchBar() {
             alignItems: 'center',
           }}
         >
-          <SearchIcon sx={{ ml: 2, color: 'text.secondary' }} />
+          {loading ? (
+            <CircularProgress size={20} sx={{ ml: 2 }} />
+          ) : (
+            <SearchIcon sx={{ ml: 2,  }} />
+          )}
           <InputBase 
             placeholder="Search Events..."
             value={searchTerm}
@@ -90,7 +94,7 @@ export default function SearchBar() {
         </Box>
 
         {/* Search Results Dropdown */}
-        {showDropdown && searchResults.length > 0 && (
+        {showDropdown && (
           <Paper
             sx={{
               position: 'absolute',
@@ -103,33 +107,45 @@ export default function SearchBar() {
               zIndex: 1300,
             }}
           >
-            <List>
-              {searchResults.map((event) => (
-                <ListItem 
-                  button 
-                  key={event.id}
-                  onClick={() => handleEventClick(event.id)}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                    },
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      variant="rounded"
-                      src={event.image || 'https://source.unsplash.com/random?concert'}
-                      alt={event.event_name}
-                      sx={{ width: 60, height: 60 }}
+            {loading ? (
+              <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress size={24} />
+              </Box>
+            ) : searchResults.length > 0 ? (
+              <List>
+                {searchResults.map((event) => (
+                  <ListItem 
+                    button 
+                    key={event.id}
+                    onClick={() => handleEventClick(event.id)}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      },
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        variant="rounded"
+                        src={event.image || 'https://source.unsplash.com/random?concert'}
+                        alt={event.event_name}
+                        sx={{ width: 60, height: 60 }}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText 
+                      primary={event.event_name}
+                      sx={{ ml: 2 }}
                     />
-                  </ListItemAvatar>
-                  <ListItemText 
-                    primary={event.event_name}
-                    sx={{ ml: 2 }}
-                  />
-                </ListItem>
-              ))}
-            </List>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Box sx={{ p: 2, textAlign: 'center' }}>
+                <Typography color="text.secondary">
+                  No results found
+                </Typography>
+              </Box>
+            )}
           </Paper>
         )}
       </Box>

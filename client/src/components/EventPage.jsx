@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Box,
@@ -16,12 +16,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useParams } from "react-router-dom";
 import apiLink from "../data/ApiLink";
+import BookingButton from './BookingButton';
+import { checkEventBookingStatus } from '../utils/checkEventBookingStatus';
+import { useAuth } from "../context/AuthContext";
 
 export default function EventPage() {
   const { id } = useParams();
   const [event, setEvent] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [isBooked, setIsBooked] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -43,6 +48,17 @@ export default function EventPage() {
     };
     fetchEvent();
   }, [id]);
+
+  useEffect(() => {
+    const checkBookingStatus = async () => {
+      if (user && event) {
+        const status = await checkEventBookingStatus(event.id, user.id);
+        setIsBooked(status);
+      }
+    };
+    
+    checkBookingStatus();
+  }, [user, event]);
 
   if (loading) {
     return (
@@ -181,7 +197,7 @@ export default function EventPage() {
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 {event.tags.map((tag, index) => (
                   <Chip
-                    key={index}  // Changed from tag.id since it's not in the response
+                    key={index}  
                     icon={<Tag />}
                     label={tag.name}
                     color="primary"
@@ -227,6 +243,15 @@ export default function EventPage() {
                 Location
               </Typography>
               <Typography>{event.venu}</Typography>
+            </Box>
+            <Box sx={{ mt: 3 }}>
+              <BookingButton 
+                eventId={event.id}
+                isBooked={isBooked}
+                onBookingSuccess={() => {
+                  setIsBooked(true);
+                }}
+              />
             </Box>
           </Paper>
         </Grid>
