@@ -11,12 +11,17 @@ import {
 } from "@mui/material";
 import { AccessTime, LocationOn } from "@mui/icons-material";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export default function EventCard({ event, sx = {} }) {
+   const navigate = useNavigate();
+  
   // Format dates for display
   const startDate = new Date(event.start_date);
   const endDate = new Date(event.end_date);
-
+  const handleLernMore = () => {
+     navigate(`/events/${event.id}`);
+  }
   // Calculate duration in days
   const durationInDays = Math.ceil(
     (endDate - startDate) / (1000 * 60 * 60 * 24)
@@ -78,7 +83,7 @@ export default function EventCard({ event, sx = {} }) {
         )}
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={handleLernMore}>
           Learn More
         </Button>
         <Button size="small" color="primary">

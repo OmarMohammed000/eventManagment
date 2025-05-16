@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, Divider, Typography } from '@mui/material';
 
 export default function TagFilter({ tags, selectedTag, onTagSelect }) {
   return (
     <Box sx={{ mb: 3, mt: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2,  }}>
         Filter by Category
       </Typography>
       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>

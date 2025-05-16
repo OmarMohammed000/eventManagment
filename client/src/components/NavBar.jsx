@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import ColorModeToggle from './ColorModeToggle';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function NavBar() {
   // This will come from useAuth later
@@ -28,8 +29,13 @@ export default function NavBar() {
             <Typography
               variant="h6"
               noWrap
-              component="div"
-              sx={{ cursor: 'pointer' }}
+              component={RouterLink}
+              to="/"
+              sx={{ 
+                cursor: 'pointer',
+                textDecoration: 'none', 
+                color: 'inherit' 
+              }}
             >
               EMS
             </Typography>
@@ -79,11 +85,17 @@ export default function NavBar() {
               <Button color="inherit">Logout</Button>
             ) : (
               <>
-                <Button color="inherit">Login</Button>
                 <Button 
                   color="inherit" 
-                  variant="outlined" 
-                  sx={{ borderColor: 'inherit' }}
+                  component={RouterLink} 
+                  to="/login"
+                >
+                  Login
+                </Button>
+                <Button 
+                  color="inherit" 
+                  component={RouterLink} 
+                  to="/register"
                 >
                   Register
                 </Button>

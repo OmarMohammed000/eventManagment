@@ -6,7 +6,21 @@ async function getEventById(req, res) {
     return res.status(400).json({ message: "Invalid Event ID" });
   }
   try {
-    const event = await db.Event.findByPk(id);
+    const event = await db.Event.findByPk(id,{
+      include: [
+        {
+          model: db.Tag,
+          as: 'tags',
+          through: { attributes: [] }, // Excludes junction table attributes
+          attributes: ['name']
+        },
+        {
+          model: db.EventImage,
+          as: 'event_images',
+          attributes: [ 'image_location']
+        }
+      ]
+    });
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }

@@ -9,7 +9,7 @@ const isloggedIn = false;
 export default function MainPage() {
   return (
     <div>
-      <NavBar />
+      
       <div sx={{ marginBottom: "64px" }}>
         <HeroSection></HeroSection>
       </div>
@@ -21,7 +21,7 @@ export default function MainPage() {
           </Typography>
          
         </Divider>
-
+        
         <Events></Events>
       </Container>
     </div>
