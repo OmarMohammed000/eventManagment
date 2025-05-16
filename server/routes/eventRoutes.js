@@ -12,8 +12,10 @@ import addTagToEvent from "../controllers/Events/addTagToEvent.js";
 import removeTagFromEvent from "../controllers/Events/removeTagFromEvent.js";
 import addUserToEvent from "../controllers/Events/addUserToEvent.js";
 import removeUserFromEvent from "../controllers/Events/removeUserFromEvent.js";
+import searchEvents from "../controllers/Events/searchEvents.js";
 
 const app = express.Router();
+app.get("/api/events/search", searchEvents);
 app.get("/api/events", getEvents);
 app.get("/api/events/:id", getEventById);
 app.get("/api/events/tag/:tagId", getEventByTag);
