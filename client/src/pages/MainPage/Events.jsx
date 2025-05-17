@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import EventCard from "../../components/EventCard";
 import TagFilter from "./TagFilter";
 import apiLink from "../../data/ApiLink";
-import { Alert, Box, Container, Grid, Skeleton } from "@mui/material";
+import { Alert, Box, Container, Grid, Skeleton, Typography, Button } from "@mui/material";
 import axios from "axios";
 import { checkEventBookingStatus } from '../../utils/checkEventBookingStatus';
 import { useAuth } from "../../context/AuthContext";
+import { Event as EventIcon } from '@mui/icons-material';
 
 export default function Events() {
   const { user } = useAuth();
@@ -36,7 +37,18 @@ export default function Events() {
         setBookedStatuses(statuses);
       }
     } catch (error) {
-      setError("Error Fetching events: " + error);
+      if (error.response?.status === 404 && error.response.data.code === "NO_EVENTS_IN_TAG") {
+        setError({
+          type: "NO_EVENTS",
+          message: error.response.data.message,
+          tagName: error.response.data.tagName
+        });
+      } else {
+        setError({
+          type: "ERROR",
+          message: "Error fetching events: " + error.message
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -60,6 +72,7 @@ export default function Events() {
 
   const handleTagSelect = (tagId) => {
     setSelectedTag(tagId);
+    setError(null); // Clear any existing errors when changing tags
   };
 
   if (loading) {
@@ -67,7 +80,41 @@ export default function Events() {
   }
 
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    if (error.type === "NO_EVENTS") {
+      return (
+        <Container maxWidth="xl">
+          <TagFilter 
+            tags={tags}
+            selectedTag={selectedTag}
+            onTagSelect={handleTagSelect}
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              py: 8,
+              textAlign: 'center'
+            }}
+          >
+            <EventIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              {error.message}
+            </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => handleTagSelect(null)} // Use handleTagSelect instead of direct setState
+              sx={{ mt: 2 }}
+            >
+              View All Events
+            </Button>
+          </Box>
+        </Container>
+      );
+    }
+    return <Alert severity="error">{error.message}</Alert>;
   }
 
   return (

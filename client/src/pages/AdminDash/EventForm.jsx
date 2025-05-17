@@ -13,6 +13,7 @@ import apiLink from '../../data/ApiLink';
 import EventDetailsSection from './EventDetailsSection';
 import TagsSection from './TagSection';
 import ImageUploadSection from './ImageUploadSection';
+import ExitConfirmationDialog from './ExitConfirmationDialog';
 
 export default function EventForm({ mode, initialData, onSuccess, onCancel }) {
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ export default function EventForm({ mode, initialData, onSuccess, onCancel }) {
   const [availableTags, setAvailableTags] = useState([]);
   const [images, setImages] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   
   useEffect(() => {
     if (mode === 'edit' && initialData) {
@@ -178,53 +180,82 @@ export default function EventForm({ mode, initialData, onSuccess, onCancel }) {
     }
   };
 
+  const handleCancel = () => {
+    // Check if form has been modified
+    const isFormModified = 
+      formData.event_name !== (initialData?.event_name || '') ||
+      formData.description !== (initialData?.description || '') ||
+      formData.venu !== (initialData?.venu || '') ||
+      formData.start_date !== (initialData?.start_date ? formatDateTime(initialData.start_date) : '') ||
+      formData.end_date !== (initialData?.end_date ? formatDateTime(initialData.end_date) : '') ||
+      images.length > 0 ||
+      JSON.stringify(tags) !== JSON.stringify(initialData?.tags?.map(tag => tag.id) || []);
+
+    if (isFormModified) {
+      setShowExitDialog(true);
+    } else {
+      onCancel();
+    }
+  };
+
   return (
-    <Paper sx={{ p: 3 }}>
-      <Box component="form" onSubmit={handleSubmit}>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        
-        <Stack spacing={3}>
-          <EventDetailsSection 
-            formData={formData}
-            formErrors={formErrors}
-            onChange={setFormData}
-          />
+    <>
+      <Paper sx={{ p: 3 }}>
+        <Box component="form" onSubmit={handleSubmit}>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          
+          <Stack spacing={3}>
+            <EventDetailsSection 
+              formData={formData}
+              formErrors={formErrors}
+              onChange={setFormData}
+            />
 
-          <Divider />
+            <Divider />
 
-          <TagsSection
-            tags={tags}
-            availableTags={availableTags}
-            onChange={setTags}
-          />
+            <TagsSection
+              tags={tags}
+              availableTags={availableTags}
+              onChange={setTags}
+            />
 
-          <Divider />
+            <Divider />
 
-          <ImageUploadSection
-            mode={mode}
-            images={images}
-            existingImages={existingImages}
-            onImagesChange={setImages}
-            onImageDelete={(index) => setImages(prev => prev.filter((_, i) => i !== index))}
-          />
+            <ImageUploadSection
+              mode={mode}
+              images={images}
+              existingImages={existingImages}
+              onImagesChange={setImages}
+              onImageDelete={(index) => setImages(prev => prev.filter((_, i) => i !== index))}
+            />
 
-          <Divider />
+            <Divider />
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button onClick={onCancel} disabled={loading}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} /> : null}
-            >
-              {loading ? 'Saving...' : mode === 'create' ? 'Create Event' : 'Save Changes'}
-            </Button>
-          </Box>
-        </Stack>
-      </Box>
-    </Paper>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+              <Button onClick={handleCancel} disabled={loading}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={loading}
+                startIcon={loading ? <CircularProgress size={20} /> : null}
+              >
+                {loading ? 'Saving...' : mode === 'create' ? 'Create Event' : 'Save Changes'}
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
+      </Paper>
+
+      <ExitConfirmationDialog
+        open={showExitDialog}
+        onClose={() => setShowExitDialog(false)}
+        onConfirm={() => {
+          setShowExitDialog(false);
+          onCancel();
+        }}
+      />
+    </>
   );
 }
