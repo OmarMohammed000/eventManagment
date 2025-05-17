@@ -50,7 +50,6 @@ async function login(req, res) {
       secure: true, // Always use secure in production
       sameSite: 'none', // Required for cross-site cookies
       maxAge: 120 * 60 * 1000, // 120 minutes
-      domain: '.onrender.com', // Your API domain
       path: '/'
     });
 
