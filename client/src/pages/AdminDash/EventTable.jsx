@@ -19,6 +19,7 @@ import DeleteEventDialog from "./DeleteEventDialog";
 import axios from "axios";
 import apiLink from "../../data/ApiLink";
 import TableSkeleton from "./TableSkeleton";
+import BackToAdminButton from './BackToAdminButton';
 
 export default function EventTable() {
   const [events, setEvents] = useState([]);
@@ -65,6 +66,7 @@ export default function EventTable() {
 
   return (
     <>
+      <BackToAdminButton />
       <EventTableHeader
         onCreateClick={() => {
           setDialogMode("create");

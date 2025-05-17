@@ -21,6 +21,7 @@ import TagDialog from './TagDialog';
 import DeleteTagDialog from './DeleteTagDialog';
 import TagTableHeader from './TagTableHeader';
 import TableSkeleton from './TableSkeleton';
+import BackToAdminButton from './BackToAdminButton';
 
 export default function TagsTable() {
   const [tags, setTags] = useState([]);
@@ -99,6 +100,7 @@ export default function TagsTable() {
 
   return (
     <>
+      <BackToAdminButton />
       <TagTableHeader onCreateClick={() => {
         setDialogMode('create');
         setOpenDialog(true);

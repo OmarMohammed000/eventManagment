@@ -1,41 +1,56 @@
-import * as React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CustomThemeProvider from './context/ColorModeContext.jsx';
-import { AuthProvider } from './context/AuthContext.jsx';
-import MainPage from './pages/MainPage/MainPage.jsx';
-import EventPage from './components/EventPage.jsx';
-import Layout from './components/Layout.jsx';
-import AuthForm from './pages/Auth/AuthForm.jsx';
-import AdminDashboard from './pages/AdminDash/AdminDashboard.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
+import React from "react";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import MainPage from "./pages/MainPage/MainPage";
+import EventPage from "./components/EventPage";
+import Layout from "./components/Layout";
+import AuthForm from "./pages/Auth/AuthForm";
+import AdminDashboard from "./pages/AdminDash/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import { AuthProvider } from "./context/AuthContext";
+import CustomThemeProvider from "./context/ColorModeContext";
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    errorElement: <>ERROR</>,
+    children: [
+      {
+        path: '/',
+        element: <MainPage />
+      },
+      {
+        path: '/events/:id',
+        element: <EventPage />
+      },
+      {
+        path: '/login',
+        element: <AuthForm />
+      },
+      {
+        path: '/register',
+        element: <AuthForm isRegister={true} />
+      },
+      {
+        path: '/admin/*',
+        element: (
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        )
+      }
+    ]
+  }
+]);
 
 function App() {
   return (
-    <CustomThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              {/* Public routes */}
-              <Route index element={<MainPage />} />
-              <Route path="login" element={<AuthForm isRegister={false} />} />
-              <Route path="register" element={<AuthForm isRegister={true} />} />
-              <Route path="events/:id" element={<EventPage />} />
-              
-              {/* Protected admin routes */}
-              <Route
-                path="admin/*"
-                element={
-                  <ProtectedRoute requireAdmin>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </CustomThemeProvider>
+    <AuthProvider>
+      <CustomThemeProvider>
+        <RouterProvider router={router} />
+      </CustomThemeProvider>
+    </AuthProvider>
   );
 }
 

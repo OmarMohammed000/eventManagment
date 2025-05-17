@@ -12,16 +12,28 @@ import {
 } from "@mui/material";
 import { LocationOn, AccessTime, Tag } from "@mui/icons-material";
 import { format } from "date-fns";
+// Import Bootstrap CSS and JS
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { useEffect as useBootstrapEffect } from "react";
+import { Carousel } from "bootstrap";
+
 import { useParams } from "react-router-dom";
 import apiLink from "../data/ApiLink";
-import BookingButton from './BookingButton';
-import { checkEventBookingStatus } from '../utils/checkEventBookingStatus';
+import BookingButton from "./BookingButton";
+import { checkEventBookingStatus } from "../utils/checkEventBookingStatus";
 import { useAuth } from "../context/AuthContext";
 
 export default function EventPage() {
+  // Initialize Bootstrap JS on component mount
+  useBootstrapEffect(() => {
+    // Initialize all carousels
+    const carouselElement = document.querySelector("#eventImageCarousel");
+    if (carouselElement) {
+      new Carousel(carouselElement);
+    }
+  }, []);
   const { id } = useParams();
+
   const [event, setEvent] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -32,9 +44,7 @@ export default function EventPage() {
     const fetchEvent = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${apiLink}/events/${id}`
-        );
+        const response = await fetch(`${apiLink}/events/${id}`);
         if (!response.ok) {
           throw new Error(response.statusText);
         }
@@ -56,7 +66,7 @@ export default function EventPage() {
         setIsBooked(status);
       }
     };
-    
+
     checkBookingStatus();
   }, [user, event]);
 
@@ -88,7 +98,7 @@ export default function EventPage() {
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 10 }}>
-        <Alert severity="error" sx={{ mb: 10,mt:10 }}>
+        <Alert severity="error" sx={{ mb: 10, mt: 10 }}>
           {error}
         </Alert>
       </Container>
@@ -115,13 +125,12 @@ export default function EventPage() {
           <div className="carousel-inner">
             {event.event_images.map((image, index) => (
               <div
-                key={index}  // Changed from image.id since it's not in the response
+                key={index} // Changed from image.id since it's not in the response
                 className={`carousel-item ${index === 0 ? "active" : ""}`}
               >
                 <img
                   src={image.image_location}
                   className="d-block w-100"
-                  alt={`Event image ${index + 1}`}
                   style={{
                     height: "400px",
                     objectFit: "cover",
@@ -139,7 +148,7 @@ export default function EventPage() {
           >
             <span
               className="carousel-control-prev-icon"
-              aria-hidden="true"  
+              aria-hidden="true"
             ></span>
             <span className="visually-hidden">Previous</span>
           </button>
@@ -197,7 +206,7 @@ export default function EventPage() {
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 {event.tags.map((tag, index) => (
                   <Chip
-                    key={index}  
+                    key={index}
                     icon={<Tag />}
                     label={tag.name}
                     color="primary"
@@ -211,7 +220,7 @@ export default function EventPage() {
 
         {/* Sidebar */}
         <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 3, position: "sticky", top: 20  }}>
+          <Paper elevation={3} sx={{ p: 3, position: "sticky", top: 20 }}>
             {durationInDays > 1 && (
               <Chip
                 label={`${durationInDays} day event`}
@@ -245,7 +254,7 @@ export default function EventPage() {
               <Typography>{event.venu}</Typography>
             </Box>
             <Box sx={{ mt: 3 }}>
-              <BookingButton 
+              <BookingButton
                 eventId={event.id}
                 isBooked={isBooked}
                 onBookingSuccess={() => {

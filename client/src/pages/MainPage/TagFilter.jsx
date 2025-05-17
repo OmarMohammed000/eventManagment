@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Chip, Divider, Typography } from '@mui/material';
+import { Box, Chip, Typography } from '@mui/material';
 
 export default function TagFilter({ tags, selectedTag, onTagSelect }) {
   return (

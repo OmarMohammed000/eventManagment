@@ -19,6 +19,7 @@ import {
 import axios from 'axios';
 import apiLink from '../../data/ApiLink';
 import TableSkeleton from './TableSkeleton';
+import BackToAdminButton from './BackToAdminButton';
 
 export default function UserTable() {
   const [users, setUsers] = useState([]);
@@ -75,6 +76,7 @@ export default function UserTable() {
 
   return (
     <>
+      <BackToAdminButton />
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" gutterBottom>
           User Management
