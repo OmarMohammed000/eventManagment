@@ -25,8 +25,11 @@ const UserEvents = (sequelize) => {
     {
       tableName: "user_events",
       underscored: true,
-      timestamps: false,
+      timestamps: true, // Enable timestamps
+      createdAt: true, // Enable createdAt
+      updatedAt: false // Disable updatedAt if not needed
     }
   );
 };
+
 export default UserEvents;

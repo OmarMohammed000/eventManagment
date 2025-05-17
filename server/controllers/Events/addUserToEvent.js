@@ -31,10 +31,11 @@ async function addUserToEvent(req, res) {
       });
     }
 
-    // Add the user to the event
+    // Add the user to the event with timestamp
     await db.UserEvents.create({
       user_id: userId,
-      event_id: eventId
+      event_id: eventId,
+      created_at: new Date() // Add timestamp
     });
 
     res.status(200).json({ message: "User added to event successfully" });
