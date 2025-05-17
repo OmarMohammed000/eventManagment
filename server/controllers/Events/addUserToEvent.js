@@ -17,6 +17,20 @@ async function addUserToEvent(req, res) {
       return res.status(404).json({ message: "Event not found" });
     }
 
+    // Check if user is already booked for this event
+    const existingBooking = await db.UserEvents.findOne({
+      where: {
+        user_id: userId,
+        event_id: eventId
+      }
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({ 
+        message: "User is already booked for this event"
+      });
+    }
+
     // Add the user to the event
     await db.UserEvents.create({
       user_id: userId,

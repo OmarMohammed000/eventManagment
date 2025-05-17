@@ -4,11 +4,13 @@ import login from "../controllers/users/login.js";
 import register from "../controllers/users/register.js";
 import logout from "../controllers/users/logout.js";
 import refreshToken from "../controllers/users/refreshToken.js";
+import me from "../controllers/users/me.js";
 
 const app = express.Router();
 // login route
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
+app.get('/api/auth/me', isAuth, me);
 app.post('/api/auth/logout', isAuth, logout);
 app.post('/api/auth/refresh-token', refreshToken);
 

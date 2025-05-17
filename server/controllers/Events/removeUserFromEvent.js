@@ -1,7 +1,8 @@
 import db from "../../models/index.js";
 
 async function removeUserFromEvent(req, res) {
-  const { eventId, userId } = req.body;
+  const eventId = parseInt(req.params.eventId);
+  const userId = parseInt(req.params.userId);
 
   if (!eventId || !userId) {
     return res.status(400).json({ message: "Event ID and User ID are required" });
@@ -15,7 +16,7 @@ async function removeUserFromEvent(req, res) {
     }
 
     // Check if the user is part of the event
-    const userEvent = await db.UserEvent.findOne({
+    const userEvent = await db.UserEvents.findOne({
       where: { event_id: eventId, user_id: userId },
     });
 
@@ -24,7 +25,7 @@ async function removeUserFromEvent(req, res) {
     }
 
     // Remove the user from the event
-    await db.UserEvent.destroy({
+    await db.UserEvents.destroy({
       where: { event_id: eventId, user_id: userId },
     });
 
