@@ -54,17 +54,24 @@ db.EventImage.belongsTo(db.Event, {
   targetKey: 'id',
   as: 'event'
 });
+
+// Update the User-Event associations
 db.User.belongsToMany(db.Event, {
-  through: 'user_events', // Match your PostgreSQL table name
-  foreignKey: 'user_id', // Match your column name
+  through: {
+    model: db.UserEvents,
+    timestamps: false  // Explicitly disable timestamps in the through model
+  },
+  foreignKey: 'user_id',
   otherKey: 'event_id'
 });
 
 db.Event.belongsToMany(db.User, {
-  through: 'user_events',
+  through: {
+    model: db.UserEvents,
+    timestamps: false  // Explicitly disable timestamps in the through model
+  },
   foreignKey: 'event_id',
   otherKey: 'user_id'
 });
-
 
 export default db;
