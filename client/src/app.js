@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CustomThemeProvider from './context/ColorModeContext.jsx';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext.jsx';
 import MainPage from './pages/MainPage/MainPage.jsx';
 import EventPage from './components/EventPage.jsx';
 import Layout from './components/Layout.jsx';
 import AuthForm from './pages/Auth/AuthForm.jsx';
 import AdminDashboard from './pages/AdminDash/AdminDashboard.jsx';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function App() {
   return (
