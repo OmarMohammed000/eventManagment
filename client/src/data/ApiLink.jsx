@@ -1,2 +1,2 @@
-const apiLink="http://localhost:4000/api";
+const apiLink="https://eventmanagment-4i0o.onrender.com/api";
 export default apiLink;
