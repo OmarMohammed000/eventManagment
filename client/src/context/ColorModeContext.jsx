@@ -6,13 +6,22 @@ export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
+const THEME_STORAGE_KEY = 'ems-theme-preference';
+
 export default function CustomThemeProvider({ children }) {
-  const [mode, setMode] = React.useState("light");
+  const [mode, setMode] = React.useState(() => {
+    const savedMode = localStorage.getItem(THEME_STORAGE_KEY);
+    return savedMode || "light";
+  });
 
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setMode((prevMode) => {
+          const newMode = prevMode === "light" ? "dark" : "light";
+          localStorage.setItem(THEME_STORAGE_KEY, newMode);
+          return newMode;
+        });
       },
     }),
     []

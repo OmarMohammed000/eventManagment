@@ -9,8 +9,10 @@ import {
 } from "@mui/material";
 import SearchBar from "./SearchBar";
 import ColorModeToggle from './ColorModeToggle';
+import MobileDrawer from './MobileDrawer';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { scrollToSection } from '../utils/scrollToSection';
 
 export default function NavBar() {
   const { user, logout } = useAuth();
@@ -32,29 +34,38 @@ export default function NavBar() {
           paddingLeft: 2,
         }} 
       >
-        {/* Left section - Brand and conditional Your Events */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography
-            variant="h6"
-            noWrap
-            component={RouterLink}
-            to="/"
-            sx={{ 
-              cursor: 'pointer',
-              textDecoration: 'none', 
-              color: 'inherit' 
-            }}
-          >
-            EMS
-          </Typography>
+        {/* Mobile Drawer */}
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+          <MobileDrawer />
+        </Box>
+
+        {/* Brand */}
+        <Typography
+          variant="h6"
+          noWrap
+          component={RouterLink}
+          to="/"
+          sx={{ 
+            cursor: 'pointer',
+            textDecoration: 'none', 
+            color: 'inherit' 
+          }}
+        >
+          EMS
+        </Typography>
+
+        {/* Desktop Navigation */}
+        <Box sx={{ 
+          display: { xs: 'none', sm: 'flex' }, 
+          alignItems: 'center', 
+          gap: 2,
+          ml: 2
+        }}>
           <Button 
             color="inherit" 
             component={RouterLink} 
             to="/?section=events"
-            onClick={() => {
-              const element = document.getElementById('events');
-              element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
+            onClick={() => scrollToSection('events')}
           >
             Events
           </Button>
@@ -63,34 +74,31 @@ export default function NavBar() {
               color="inherit"
               component={RouterLink}
               to="/?section=your-events"
-              onClick={() => {
-                const element = document.getElementById('your-events');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
+              onClick={() => scrollToSection('your-events')}
             >
               Your Events
             </Button>
           )}
         </Box>
 
-        {/* Center section - Search Bar */}
+        {/* Search Bar */}
         <Box
           sx={{
             flexGrow: 1,
-            display: 'flex',
             justifyContent: 'center',
-            px: 4
+            px: 4,
+            display: { xs: 'none', md: 'flex' }
           }}
         >
           <SearchBar />
         </Box>
 
-        {/* Right section - Auth buttons, Admin Dashboard, and Theme Toggle */}
+        {/* Right section - Auth buttons & Theme Toggle */}
         <Stack 
           direction="row" 
           spacing={2} 
           alignItems="center" 
-          justifyContent="flex-end"
+          sx={{ display: { xs: 'none', sm: 'flex' } }}
         >
           {user ? (
             <>

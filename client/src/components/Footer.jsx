@@ -1,11 +1,22 @@
 import React from "react";
 import { Box, Container, Typography, Link, Divider } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { scrollToSection } from '../utils/scrollToSection';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <Box
@@ -55,30 +66,58 @@ export default function Footer() {
             <Link 
               component={RouterLink} 
               to="/?section=events"
-              onClick={() => {
-                const element = document.getElementById('events');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
+              onClick={() => scrollToSection('events')}
               color="text.secondary"
             >
               Events
             </Link>
             {user && (
-              <Link
-                component={RouterLink}
-                to="/?section=your-events"
-                onClick={() => {
-                  const element = document.getElementById('your-events');
-                  element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }}
-                color="text.secondary"
-              >
-                Your Events
-              </Link>
+              <>
+                <Link
+                  component={RouterLink}
+                  to="/?section=your-events"
+                  onClick={() => scrollToSection('your-events')}
+                  color="text.secondary"
+                >
+                  Your Events
+                </Link>
+                {user.isAdmin && (
+                  <Link
+                    component={RouterLink}
+                    to="/admin"
+                    color="text.secondary"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
+                <Link
+                  component="button"
+                  onClick={handleLogout}
+                  color="text.secondary"
+                  sx={{
+                    background: 'none',
+                    border: 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Logout
+                </Link>
+              </>
             )}
-            <Link component={RouterLink} to="/login" color="text.secondary">
-              Login
-            </Link>
+            {!user && (
+              <>
+                <Link component={RouterLink} to="/login" color="text.secondary">
+                  Login
+                </Link>
+                <Link component={RouterLink} to="/register" color="text.secondary">
+                  Register
+                </Link>
+              </>
+            )}
           </Box>
         </Box>
 

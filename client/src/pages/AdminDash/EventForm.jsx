@@ -1,35 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  TextField,
   Button,
   Alert,
   CircularProgress,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Chip,
-  IconButton,
   Paper,
-  Typography,
   Stack,
   Divider,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
 } from '@mui/material';
-import { 
-  CloudUpload as CloudUploadIcon, 
-  Delete as DeleteIcon,
-  Event as EventIcon,
-  LocationOn as LocationIcon,
-  Description as DescriptionIcon,
-  LocalOffer as TagIcon,
-} from '@mui/icons-material';
 import axios from 'axios';
 import apiLink from '../../data/ApiLink';
+import EventDetailsSection from './EventDetailsSection';
+import TagsSection from './TagSection';
+import ImageUploadSection from './ImageUploadSection';
 
 export default function EventForm({ mode, initialData, onSuccess, onCancel }) {
   const [loading, setLoading] = useState(false);
@@ -201,186 +184,29 @@ export default function EventForm({ mode, initialData, onSuccess, onCancel }) {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         
         <Stack spacing={3}>
-          <Typography variant="h6" color="primary">
-            Event Details
-          </Typography>
-
-          <TextField
-            fullWidth
-            label="Event Name"
-            value={formData.event_name}
-            onChange={(e) => setFormData(prev => ({ ...prev, event_name: e.target.value }))}
-            required
-            error={!!formErrors.event_name}
-            helperText={formErrors.event_name}
-            InputProps={{
-              startAdornment: <EventIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            }}
+          <EventDetailsSection 
+            formData={formData}
+            formErrors={formErrors}
+            onChange={setFormData}
           />
-
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            label="Description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            required
-            error={!!formErrors.description}
-            helperText={formErrors.description}
-            InputProps={{
-              startAdornment: <DescriptionIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            }}
-          />
-
-          <TextField
-            fullWidth
-            label="Venue"
-            value={formData.venu}
-            onChange={(e) => setFormData(prev => ({ ...prev, venu: e.target.value }))}
-            required
-            error={!!formErrors.venu}
-            helperText={formErrors.venu}
-            InputProps={{
-              startAdornment: <LocationIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            }}
-          />
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="datetime-local"
-                label="Start Date"
-                value={formData.start_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
-                InputLabelProps={{ shrink: true }}
-                required
-                error={!!formErrors.start_date}
-                helperText={formErrors.start_date}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="datetime-local"
-                label="End Date"
-                value={formData.end_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
-                InputLabelProps={{ shrink: true }}
-                required
-                error={!!formErrors.end_date}
-                helperText={formErrors.end_date}
-              />
-            </Grid>
-          </Grid>
 
           <Divider />
 
-          <Typography variant="h6" color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TagIcon /> Tags & Images
-          </Typography>
+          <TagsSection
+            tags={tags}
+            availableTags={availableTags}
+            onChange={setTags}
+          />
 
-          <FormControl fullWidth>
-            <InputLabel>Tags</InputLabel>
-            <Select
-              multiple
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => {
-                    const tag = availableTags.find(t => t.id === value);
-                    return <Chip key={value} label={tag?.name} />;
-                  })}
-                </Box>
-              )}
-            >
-              {availableTags.map((tag) => (
-                <MenuItem key={tag.id} value={tag.id}>
-                  {tag.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Divider />
 
-          <Box>
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="outlined"
-                component="label"
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload Images
-                <input
-                  type="file"
-                  hidden
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => setImages(Array.from(e.target.files))}
-                />
-              </Button>
-              <Typography variant="caption" sx={{ ml: 2, color: 'text.secondary' }}>
-                Maximum 5 images allowed
-              </Typography>
-            </Box>
-
-            {mode === 'edit' && existingImages.length > 0 && (
-              <>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  Current Images:
-                </Typography>
-                <ImageList sx={{ maxHeight: 200 }} cols={4} rowHeight={100}>
-                  {existingImages.map((image, index) => (
-                    <ImageListItem key={index}>
-                      <img
-                        src={image.image_location}
-                        alt={`Event ${index + 1}`}
-                        loading="lazy"
-                        style={{ objectFit: 'cover', height: '100%' }}
-                      />
-                    </ImageListItem>
-                  ))}
-                </ImageList>
-              </>
-            )}
-
-            {images.length > 0 && (
-              <>
-                <Typography variant="subtitle2" sx={{ mb: 1, mt: 2 }}>
-                  {mode === 'edit' ? 'New Images:' : 'Selected Images:'}
-                </Typography>
-                <ImageList sx={{ maxHeight: 200 }} cols={4} rowHeight={100}>
-                  {images.map((image, index) => (
-                    <ImageListItem key={index}>
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`Preview ${index + 1}`}
-                        loading="lazy"
-                        style={{ objectFit: 'cover', height: '100%' }}
-                      />
-                      <ImageListItemBar
-                        actionIcon={
-                          <IconButton
-                            sx={{ color: 'white' }}
-                            onClick={() => setImages(prev => prev.filter((_, i) => i !== index))}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        }
-                      />
-                    </ImageListItem>
-                  ))}
-                </ImageList>
-              </>
-            )}
-
-            {mode === 'edit' && images.length > 0 && (
-              <Alert severity="warning" sx={{ mt: 2 }}>
-                Uploading new images will replace all existing images
-              </Alert>
-            )}
-          </Box>
+          <ImageUploadSection
+            mode={mode}
+            images={images}
+            existingImages={existingImages}
+            onImagesChange={setImages}
+            onImageDelete={(index) => setImages(prev => prev.filter((_, i) => i !== index))}
+          />
 
           <Divider />
 
