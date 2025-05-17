@@ -14,10 +14,8 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "http://localhost:3000",
   "https://event-managment-git-main-omarmohammed000s-projects.vercel.app",
-  "https://event-managment.vercel.app"
+  "http://localhost:3000"
 ];
 
 // Middleware
@@ -29,19 +27,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        return callback(new Error(msg), false);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
       }
-      return callback(null, true);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-    exposedHeaders: ["set-cookie"],
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 

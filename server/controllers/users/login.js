@@ -47,9 +47,11 @@ async function login(req, res) {
     // Set access token in HTTP-only cookie
     res.cookie("jwt", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 30 * 60 * 1000 // 30 minutes
+      secure: true, // Always use secure in production
+      sameSite: 'none', // Required for cross-site cookies
+      maxAge: 120 * 60 * 1000, // 120 minutes
+      domain: '.onrender.com', // Your API domain
+      path: '/'
     });
 
     res.json({
