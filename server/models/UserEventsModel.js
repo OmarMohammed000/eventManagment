@@ -20,14 +20,11 @@ const UserEvents = (sequelize) => {
           key: "id",
         },
         onDelete: 'CASCADE'
-      },
+      }
     },
     {
       tableName: "user_events",
-      underscored: true,
-      timestamps: true, // Enable timestamps
-      createdAt: true, // Enable createdAt
-      updatedAt: false // Disable updatedAt if not needed
+      timestamps: false // Disable timestamps completely
     }
   );
 };
