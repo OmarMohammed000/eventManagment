@@ -1,32 +1,43 @@
 import db from "../../models/index.js";
 
-async function getEventByTag(req, res) {
+async function getEventsByTag(req, res) {
   const tagId = parseInt(req.params.tagId);
-  if (isNaN(tagId)) {
-    return res.status(400).json({ message: "Invalid Tag ID" });
-  }
+
   try {
+    const tag = await db.Tag.findByPk(tagId);
+    if (!tag) {
+      return res.status(404).json({
+        message: "Tag not found",
+        code: "TAG_NOT_FOUND"
+      });
+    }
+
     const events = await db.Event.findAll({
       include: [
         {
           model: db.Tag,
-          as: 'tags', // Add this alias to match the model association
-          where: { id: tagId },
-          through: { attributes: [] },
+          as: 'tags',
+          where: { id: tagId }
         },
         {
           model: db.EventImage,
-          as: 'event_images' // Include images as well to match the Events component
+          as: 'event_images'
         }
-      ],
+      ]
     });
+
     if (events.length === 0) {
-      return res.status(404).json({ message: "No events found for this tag" });
+      return res.status(404).json({
+        message: `No events found for category: ${tag.name}`,
+        code: "NO_EVENTS_IN_TAG",
+        tagName: tag.name
+      });
     }
-    res.status(200).json(events);
+
+    res.json(events);
   } catch (error) {
-    console.error("Error fetching events by tag:", error);
-    res.status(500).json({ message: "An error occurred while fetching events by tag" });
+    res.status(500).json({ message: "Error fetching events by tag" });
   }
 }
-export default getEventByTag;
+
+export default getEventsByTag;
