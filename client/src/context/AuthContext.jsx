@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
 import apiLink from '../data/ApiLink';
 
@@ -85,16 +86,27 @@ export function AuthProvider({ children }) {
 
   // Show loading state while checking authentication
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        sx={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          bgcolor: (theme) => theme.palette.background.default
+        }}
+      >
+        <CircularProgress size={40} />
+        <Typography variant="h6" color="text.secondary">
+          Loading EMS...
+        </Typography>
+      </Box>
+    );
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);

@@ -1,12 +1,9 @@
 import React from 'react';
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Box,
   Chip,
   Typography,
+  Autocomplete,
+  TextField
 } from '@mui/material';
 import { LocalOffer as TagIcon } from '@mui/icons-material';
 
@@ -17,28 +14,32 @@ export default function TagsSection({ tags, availableTags, onChange }) {
         <TagIcon /> Tags
       </Typography>
 
-      <FormControl fullWidth>
-        <InputLabel>Tags</InputLabel>
-        <Select
-          multiple
-          value={tags}
-          onChange={(e) => onChange(e.target.value)}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => {
-                const tag = availableTags.find(t => t.id === value);
-                return <Chip key={value} label={tag?.name} />;
-              })}
-            </Box>
-          )}
-        >
-          {availableTags.map((tag) => (
-            <MenuItem key={tag.id} value={tag.id}>
-              {tag.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Autocomplete
+        multiple
+        value={availableTags.filter(tag => tags.includes(tag.id))}
+        onChange={(_, newValue) => {
+          onChange(newValue.map(tag => tag.id));
+        }}
+        options={availableTags}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Select Tags"
+            placeholder="Choose tags"
+          />
+        )}
+        renderTags={(tagValue, getTagProps) =>
+          tagValue.map((option, index) => (
+            <Chip
+              label={option.name}
+              {...getTagProps({ index })}
+              key={option.id}
+            />
+          ))
+        }
+      />
     </>
   );
 }

@@ -106,7 +106,7 @@ const EventsLoadingSkeleton = () => (
     <Grid container spacing={3} padding={2}>
       {[1, 2, 3].map((item) => (
         <Grid item xs={12} key={item}>
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width:"20rem" }}>
             <Skeleton variant="rectangular" sx={{ height: 300, mb: 2 }} />
             <Skeleton variant="text" sx={{ height: 40, width: '60%', mb: 1 }} />
             <Skeleton variant="text" sx={{ height: 24, width: '40%', mb: 1 }} />

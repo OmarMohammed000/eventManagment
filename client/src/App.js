@@ -9,12 +9,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import { AuthProvider } from "./context/AuthContext";
 import CustomThemeProvider from "./context/ColorModeContext";
+import ErrorComponent from "./components/ErrorComponent";
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-    errorElement: <>ERROR</>,
+    errorElement:<ErrorComponent></ErrorComponent>,
     children: [
       {
         path: '/',
