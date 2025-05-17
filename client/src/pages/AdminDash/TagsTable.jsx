@@ -9,10 +9,14 @@ import {
   TableRow,
   Alert,
   IconButton,
+  Box,
+  Typography,
+  Button,
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
+  Add as AddIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
 import apiLink from '../../data/ApiLink';
@@ -37,7 +41,12 @@ export default function TagsTable() {
       const response = await axios.get(`${apiLink}/tags`);
       setTags(response.data);
     } catch (err) {
-      setError("Error fetching tags: " + err.message);
+      if (err.response?.status === 404) {
+        // Set tags as empty array when no tags found
+        setTags([]);
+      } else {
+        setError("Error fetching tags: " + err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -116,33 +125,61 @@ export default function TagsTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tags.map((tag) => (
-              <TableRow key={tag.id}>
-                <TableCell>{tag.id}</TableCell>
-                <TableCell>{tag.name}</TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      setSelectedTag(tag);
-                      setDialogMode('edit');
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      setSelectedTag(tag);
-                      setDeleteDialog(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+            {tags.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <Box sx={{ 
+                    py: 3, 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2
+                  }}>
+                    <Typography color="text.secondary">
+                      No tags available yet
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        setDialogMode('create');
+                        setOpenDialog(true);
+                      }}
+                    >
+                      Create First Tag
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              tags.map((tag) => (
+                <TableRow key={tag.id}>
+                  <TableCell>{tag.id}</TableCell>
+                  <TableCell>{tag.name}</TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        setSelectedTag(tag);
+                        setDialogMode('edit');
+                        setOpenDialog(true);
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => {
+                        setSelectedTag(tag);
+                        setDeleteDialog(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
