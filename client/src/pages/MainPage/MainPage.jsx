@@ -13,6 +13,7 @@ export default function MainPage() {
   return (
     <div>
       <div sx={{ marginBottom: "64px" }}>
+        nbhj;miurfsdegav nh uo;mgfdbvrxn ojzbgfdxc hno'bgrfzdcxoklnifsdebr
         <HeroSection />
       </div>
       
